@@ -2,19 +2,13 @@ import express from "express";
 import { validate } from "express-validation";
 import paramValidation from "../../config/param-validation";
 import userCtrl from "../controllers/user.controller";
+
+import { ShouldBeAdmin } from "../helpers/RouteValidations";
 import expressJwt from "express-jwt";
 import config from "../../config/config";
-import APIError from "../helpers/APIError";
-import httpStatus from "http-status";
 
 const router = express.Router(); // eslint-disable-line new-cap
 
-
-const ShouldBeAdmin = function(req, res, next) {
-  if (req.user.employeeType !== "Admin")
-    return next();
-  return next(new APIError("You should be an admin to use this api", httpStatus.UNAUTHORIZED, true));
-};
 
 router.route("/")
 
@@ -23,8 +17,7 @@ router.route("/")
     [
       expressJwt({ secret: config.jwtSecret, algorithms: [ "HS256" ] }),
       ShouldBeAdmin
-    ]
-    , userCtrl.list)
+    ], userCtrl.list)
 
   /** POST /api/users - Create new user */
   .post([

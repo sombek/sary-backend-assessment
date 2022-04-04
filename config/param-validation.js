@@ -13,6 +13,18 @@ export default {
     })
   },
 
+  createTable: {
+    body: Joi.object({
+      tableNumber: Joi.number().positive().required(),
+      tableSeats: Joi.number().positive().required()
+    })
+  },
+  deleteTable: {
+    body: Joi.object({
+      tableNumber: Joi.number().positive().required()
+    })
+  },
+
   // UPDATE /api/users/:userId
   updateUser: {
     body: Joi.object({
