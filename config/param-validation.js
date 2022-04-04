@@ -16,12 +16,7 @@ export default {
   createTable: {
     body: Joi.object({
       tableNumber: Joi.number().positive().required(),
-      tableSeats: Joi.number().positive().required()
-    })
-  },
-  deleteTable: {
-    body: Joi.object({
-      tableNumber: Joi.number().positive().required()
+      tableSeats: Joi.number().min(1).max(12).required()
     })
   },
 
