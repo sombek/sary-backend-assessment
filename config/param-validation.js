@@ -29,7 +29,7 @@ export default {
   // POST /api/auth/login
   login: {
     body: Joi.object({
-      username: Joi.string().required(),
+      employeeNumber: Joi.string().required(),
       password: Joi.string().required()
     })
   }

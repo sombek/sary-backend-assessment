@@ -1,12 +1,17 @@
-import jwt from 'jsonwebtoken';
-import httpStatus from 'http-status';
-import APIError from '../helpers/APIError';
-import config from '../../config/config';
+import jwt from "jsonwebtoken";
+import httpStatus from "http-status";
+import APIError from "../helpers/APIError";
+import config from "../../config/config";
+import db from "../../config/sequelize";
+import bcrypt from "bcrypt";
+import { getRedisClient } from "../services/redis.service";
+
+const { User } = db;
 
 // sample user, used for authentication
 const user = {
-  username: 'react',
-  password: 'express',
+  username: "react",
+  password: "express"
 };
 
 /**
@@ -17,35 +22,37 @@ const user = {
  * @returns {*}
  */
 function login(req, res, next) {
-  // Ideally you'll fetch this from the db
-  // Idea here was to show how jwt works with simplicity
-  if (req.body.username === user.username && req.body.password === user.password) {
-    const token = jwt.sign({
-      username: user.username,
-      expiresIn: 3600,
-    }, config.jwtSecret);
-    return res.json({
-      token,
-      username: user.username,
-    });
-  }
+  User.findOne({ where: { employeeNumber: req.body.employeeNumber } })
+    .then((user) => {
+      if (!user)
+        return next(new APIError("Password or Employee Number is not correct", httpStatus.UNAUTHORIZED, true));
+      user = user.toJSON();
+      bcrypt.compare(req.body.password, user.password)
+        .then(async isPasswordTrue => {
+          if (isPasswordTrue) {
 
-  const err = new APIError('Authentication error', httpStatus.UNAUTHORIZED, true);
-  return next(err);
+            // var redisClient = await getRedisClient();
+            // this will be stored in redis
+
+            const token = jwt.sign({
+              employeeNumber: user.employeeNumber,
+              employeeType: user.employeeType,
+              expiresIn: 3600
+            }, config.jwtSecret);
+
+            return res.json({
+              token,
+              username: user.username
+            });
+          }
+          const err = new APIError("Password or Employee Number is not correct", httpStatus.UNAUTHORIZED, true);
+          return next(err);
+        });
+    })
+    .catch((e) => next(e));
+
+
 }
 
-/**
- * This is a protected route. Will return random number only if jwt token is provided in header.
- * @param req
- * @param res
- * @returns {*}
- */
-function getRandomNumber(req, res) {
-  // req.user is assigned by jwt middleware if valid token is provided
-  return res.json({
-    user: req.user,
-    num: Math.random() * 100,
-  });
-}
 
-export default { login, getRandomNumber };
+export default { login };

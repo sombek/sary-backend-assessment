@@ -3,7 +3,8 @@ import config from "./config/config";
 import app from "./config/express";
 /* eslint-disable no-unused-vars */
 import db from "./config/sequelize";
-
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 const debug = require("debug")("amida-api-boilerplate:index");
 /* eslint-enable no-unused-vars */
 
@@ -15,7 +16,8 @@ Promise = require("bluebird"); // eslint-disable-line no-global-assign
 
 // Synchronizing any model changes with database.
 db.sequelize
-  .sync({ force: true })
+  // .sync({ force: true })
+  .sync()
   .then(() => {
     logger.info("Database synchronized");
     // module.parent check is required to support mocha watch
