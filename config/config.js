@@ -19,6 +19,8 @@ const envVarsSchema = Joi.object({
     .description('API Version'),
   JWT_SECRET: Joi.string().required()
     .description('JWT Secret required to sign'),
+  JWT_AGE: Joi.string().required()
+    .description('JWT token time to live'),
   UNIQUE_NAME_PG_DB: Joi.string()
     .default('api')
     .description('Postgres database name'),
@@ -55,6 +57,7 @@ const config = {
   port: envVars.PORT,
   apiVersion: envVars.API_VERSION,
   jwtSecret: envVars.JWT_SECRET,
+  jwtAge: envVars.JWT_AGE,
   postgres: {
     db: isTestEnvironment ? envVars.UNIQUE_NAME_PG_TEST_DB : envVars.UNIQUE_NAME_PG_DB,
     port: envVars.UNIQUE_NAME_PG_PORT,

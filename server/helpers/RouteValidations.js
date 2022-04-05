@@ -1,10 +1,13 @@
 import APIError from "../helpers/APIError";
 import httpStatus from "http-status";
-import expressJwt from "express-jwt";
-import config from "../../config/config";
+import { getRedisClient } from "../services/redis.service";
 
-export const ShouldBeAdmin = function(req, res, next) {
-  if (req.user.employeeType === "Admin")
+export const ShouldBeAdmin = async function(req, res, next) {
+  const redisClient = await getRedisClient();
+  const redisToken = await redisClient.get("session:" + req.user.tokenId);
+  const user = JSON.parse(redisToken);
+
+  if (user.employeeType === "Admin")
     return next();
   return next(new APIError("You should be an admin to use this api", httpStatus.UNAUTHORIZED, true));
 };
