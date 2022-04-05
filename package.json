@@ -80,6 +80,7 @@
     "jwt-redis-session": "^1.0.5",
     "lodash": "^4.17.21",
     "method-override": "^3.0.0",
+    "moment": "^2.29.2",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "redis": "^4.0.6",

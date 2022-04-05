@@ -1,6 +1,7 @@
 import { Joi } from "express-validation";
 
-let roles = [ "Admin", "Employee" ];
+const roles = [ "Admin", "Employee" ];
+
 export default {
   // POST /api/users
   createUser: {
@@ -20,16 +21,9 @@ export default {
     })
   },
 
-  // UPDATE /api/users/:userId
-  updateUser: {
-    body: Joi.object({
-      id: Joi.number().integer(),
-      name: Joi.string().required(),
-      updatedAt: Joi.string(),
-      createdAt: Joi.string()
-    }),
+  availableTimes: {
     params: Joi.object({
-      userId: Joi.string().hex().required()
+      numberOfCustomers: Joi.number().min(1).max(12).required()
     })
   },
 

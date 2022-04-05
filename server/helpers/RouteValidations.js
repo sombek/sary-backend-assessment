@@ -5,11 +5,14 @@ import { getRedisClient } from "../services/redis.service";
 export const ShouldBeAdmin = async function(req, res, next) {
   const redisClient = await getRedisClient();
   const redisToken = await redisClient.get("session:" + req.user.tokenId);
-  const user = JSON.parse(redisToken);
+  if (redisToken == null)
+    return next(new APIError("Not authorized", httpStatus.UNAUTHORIZED, true));
 
+  const user = JSON.parse(redisToken);
   if (user.employeeType === "Admin")
     return next();
-  return next(new APIError("You should be an admin to use this api", httpStatus.UNAUTHORIZED, true));
+  else
+    return next(new APIError("You should be an admin to use this api", httpStatus.UNAUTHORIZED, true));
 };
 
 

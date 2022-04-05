@@ -18,7 +18,7 @@ const winstonInstance = logger;
 
 const app = express();
 
-// parse body params and attache them to req.body
+// parse body params and attach them to req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -31,6 +31,7 @@ app.use(helmet());
 
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
+
 
 // This is really just a test output and should be the first thing you see
 winstonInstance.info("The application is starting...");
@@ -55,7 +56,12 @@ app.use(`${baseUrl}`, routes);
 app.use((err, req, res, next) => {
   if (err instanceof expressValidation.ValidationError) {
     // validation error contains errors which is an array of error each containing message[]
-    const unifiedErrorMessage = err.details.body.map((error) => error.message).join(" and ");
+    let unifiedErrorMessage = "";
+    if (err.details.body)
+      unifiedErrorMessage = err.details.body.map((error) => error.message).join(" and ");
+    if (err.details.params)
+      unifiedErrorMessage = err.details.params.map((error) => error.message).join(" and ");
+
     const error = new APIError(unifiedErrorMessage, err.statusCode, true);
     return next(error);
   }
