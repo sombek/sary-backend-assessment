@@ -5,8 +5,10 @@ import app from "./config/express";
 import db from "./config/sequelize";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
+
 const debug = require("debug")("amida-api-boilerplate:index");
 /* eslint-enable no-unused-vars */
+const { Table, Reservation } = db;
 
 // Get default logger
 const logger = loggers.get(config.loggerName); // eslint-disable-line no-global-assign
@@ -23,6 +25,7 @@ db.sequelize
     // module.parent check is required to support mocha watch
     if (!module.parent) {
       // listen on port config.port
+      Table.hasMany(Reservation, { foreignKey: "tableNumber" });
       app.listen(config.port, () => {
         logger.info(`The application has started on port ${config.port} (${config.env})`, {
           port: config.port,

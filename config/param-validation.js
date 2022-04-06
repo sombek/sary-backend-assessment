@@ -27,6 +27,16 @@ export default {
     })
   },
 
+  createReservation: {
+    body: Joi.object({
+      tableNumber: Joi.number().positive().required(),
+      startingTime: Joi.string().regex(/\b((1[0-2]|0?[1-9]):([0-5][0-9])([AaPp][Mm]))/).required()
+        .messages({ "string.pattern.base": "startingTime field fails to match the required pattern: 02:00PM" }),
+      endingTime: Joi.string().regex(/\b((1[0-2]|0?[1-9]):([0-5][0-9])([AaPp][Mm]))/).required()
+        .messages({ "string.pattern.base": "endingTime field fails to match the required pattern: 03:00PM" }),
+    })
+  },
+
   // POST /api/auth/login
   login: {
     body: Joi.object({
