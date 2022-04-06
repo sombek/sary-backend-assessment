@@ -10,6 +10,10 @@ const router = express.Router(); // eslint-disable-line new-cap
 
 
 router.route("/")
+  .get([
+    expressJwt({ secret: config.jwtSecret, algorithms: [ "HS256" ] }),
+    validate(paramValidation.getAllReservations)
+  ], reservationsController.listAll)
   .post(
     [
       expressJwt({ secret: config.jwtSecret, algorithms: [ "HS256" ] }),
@@ -24,8 +28,6 @@ router.route("/available-times/:numberOfCustomers")
       validate(paramValidation.availableTimes)
     ], reservationsController.list
   );
-
-
 
 
 export default router;

@@ -33,7 +33,15 @@ export default {
       startingTime: Joi.string().regex(/\b((1[0-2]|0?[1-9]):([0-5][0-9])([AaPp][Mm]))/).required()
         .messages({ "string.pattern.base": "startingTime field fails to match the required pattern: 02:00PM" }),
       endingTime: Joi.string().regex(/\b((1[0-2]|0?[1-9]):([0-5][0-9])([AaPp][Mm]))/).required()
-        .messages({ "string.pattern.base": "endingTime field fails to match the required pattern: 03:00PM" }),
+        .messages({ "string.pattern.base": "endingTime field fails to match the required pattern: 03:00PM" })
+    })
+  },
+
+  getAllReservations: {
+    query: Joi.object({
+      order: Joi.number().required().valid("asc", "desc" ).label("order as url parameter"),
+      page: Joi.number().required().label("page as url parameter"),
+      size: Joi.number().positive().required().label("size as url parameter")
     })
   },
 

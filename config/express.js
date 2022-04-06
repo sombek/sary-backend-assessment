@@ -61,6 +61,8 @@ app.use((err, req, res, next) => {
       unifiedErrorMessage = err.details.body.map((error) => error.message).join(" and ");
     if (err.details.params)
       unifiedErrorMessage = err.details.params.map((error) => error.message).join(" and ");
+    if (err.details.query)
+      unifiedErrorMessage = err.details.query.map((error) => error.message).join(" and ");
 
     const error = new APIError(unifiedErrorMessage, err.statusCode, true);
     return next(error);

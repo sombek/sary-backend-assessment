@@ -139,7 +139,40 @@ function create(req, res, next) {
     }).catch((e) => next(e));
 }
 
+const getPagination = (page, size) => {
+  const limit = size ? +size : 3;
+  const offset = page ? page * limit : 0;
+  return { limit, offset };
+};
+const getPagingData = (data, page, limit) => {
+  const { count: totalItems, rows: reservation } = data;
+  const currentPage = page ? +page : 0;
+  const totalPages = Math.ceil(totalItems / limit);
+  return { totalItems, reservation, totalPages, currentPage };
+};
 
+function listAll(req, res) {
+  let { page, size, order } = req.query;
+  page = +page;
+  size = +size;
+  const { limit, offset } = getPagination(page, size);
+
+  Reservation.findAndCountAll({
+    limit, offset, order: [
+      [ "startingTime", order.toUpperCase() ]
+    ]
+  })
+    .then(data => {
+      const response = getPagingData(data, page, limit);
+      res.json(response);
+    })
+    .catch(err => {
+      res.status(500).send({
+        message:
+          err.message || "Some error occurred while retrieving Reservation."
+      });
+    });
+};
 export default {
-  list, create
+  list, create, listAll
 };
