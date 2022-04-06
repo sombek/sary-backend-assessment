@@ -5,7 +5,8 @@ import app from "./config/express";
 import db from "./config/sequelize";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-
+import { seedUsers } from "./config/db.seeds";
+// coooo11
 const debug = require("debug")("amida-api-boilerplate:index");
 /* eslint-enable no-unused-vars */
 const { Table, Reservation } = db;
@@ -25,6 +26,7 @@ db.sequelize
     // module.parent check is required to support mocha watch
     if (!module.parent) {
       // listen on port config.port
+      seedUsers();
       Table.hasMany(Reservation, { foreignKey: "tableNumber" });
       app.listen(config.port, () => {
         logger.info(`The application has started on port ${config.port} (${config.env})`, {

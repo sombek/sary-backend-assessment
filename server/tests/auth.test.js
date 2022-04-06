@@ -23,13 +23,13 @@ describe('## Auth APIs', () => {
   });
 
   const validUserCredentials = {
-    username: 'react',
-    password: 'express',
+    employeeNumber: '1000',
+    password: '123456',
   };
 
   const invalidUserCredentials = {
-    username: 'react',
-    password: 'IDontKnow',
+    employeeNumber: '999',
+    password: '123456',
   };
 
   let jwtToken;
@@ -39,8 +39,9 @@ describe('## Auth APIs', () => {
       testApp
         .post(`${apiVersionPath}/auth/login`)
         .send(invalidUserCredentials)
-        .expect(httpStatus.UNAUTHORIZED)
+        // .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
+          console.log(res)
           expect(res.body.message).toEqual('Authentication error');
           done();
         })
@@ -65,7 +66,7 @@ describe('## Auth APIs', () => {
     });
   });
 
-  describe(`# GET ${apiVersionPath}/auth/random-number`, () => {
+  describe(`# GET ${apiVersionPath}/users`, () => {
     test('should fail to get random number because of missing Authorization', (done) => {
       testApp
         .get(`${apiVersionPath}/auth/random-number`)
@@ -77,9 +78,9 @@ describe('## Auth APIs', () => {
         .catch(done);
     });
 
-    test('should fail to get random number because of wrong token', (done) => {
+    test('should fail to get users because of wrong token', (done) => {
       testApp
-        .get(`${apiVersionPath}/auth/random-number`)
+        .get(`${apiVersionPath}/users`)
         .set('Authorization', 'Bearer inValidToken')
         .expect(httpStatus.UNAUTHORIZED)
         .then((res) => {
@@ -89,13 +90,13 @@ describe('## Auth APIs', () => {
         .catch(done);
     });
 
-    test('should get a random number', (done) => {
+    test('should get at least one user', (done) => {
       testApp
-        .get(`${apiVersionPath}/auth/random-number`)
+        .get(`${apiVersionPath}/users`)
         .set('Authorization', jwtToken)
         .expect(httpStatus.OK)
         .then((res) => {
-          expect(typeof res.body.num === 'number');
+          expect(typeof res.body.length > 0);
           done();
         })
         .catch(done);

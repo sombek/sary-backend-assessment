@@ -15,6 +15,7 @@ RUN yarn --pure-lockfile
 
 # copy all file from current dir to /app in container
 COPY . /app/
+RUN yarn build
 
 FROM node:16.13.2-alpine3.14
 

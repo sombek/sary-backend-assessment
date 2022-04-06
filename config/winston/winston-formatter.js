@@ -7,7 +7,7 @@ export const developmentFormatter = (printf) => printf((info) => `${info.timesta
 
 export const productionFormatter = (printf) => printf((info) => {
   function parseInfo(infoObj) {
-    return _.omtest(infoObj, [
+    return _.omit(infoObj, [
       'err',
       'hostname',
       'level',
